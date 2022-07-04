@@ -3,7 +3,6 @@ import re
 
 from question_logic import utility_logic as utl
 
-
 def logic(resource):
     '''
     requires:
@@ -32,12 +31,16 @@ def logic(resource):
                 incorrect+=list(pair[1])
             else:
                 incorrect.append(pair[1])
-    for pair in resource['fillers']:
-        if pair[0]!=focus_pair[0]:
-            if type(pair[1])in(tuple, list):
-                incorrect+=list(pair[1])
-            else:
-                incorrect.append(pair[1])
+
+    try:    
+        for pair in resource['fillers']:
+            if pair[0]!=focus_pair[0]:
+                if type(pair[1])in(tuple, list):
+                    incorrect+=list(pair[1])
+                else:
+                    incorrect.append(pair[1])
+    except KeyError as e:
+        print(e, 'No fillers, no worries!')
     #print(incorrect)
 
     posneg = randint(0,1)

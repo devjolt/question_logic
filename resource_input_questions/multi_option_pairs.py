@@ -3,13 +3,16 @@ import re
 
 from question_logic import utility_logic as utl
 
+"""can be used to make something like a correct/incorrect question from groups of pairs.
+Works as long as each pair has at least 4 items. 
+"""
 
 def logic(resource):
     '''
     resource = {
         'question_with_0':'Which isPOSNEG an example of PLACEHOLDER?',
         'positive_negative':('',' not'),
-        'type':['multi_pairs'],
+        'type':['multi_option_pairs'],
         'course_code':'',
         'pairs':[
             ('correct',['A','B','C','D']),
@@ -54,11 +57,14 @@ def logic(resource):
                 wrong+=row[answer_item]
             else:
                 wrong+=[row[answer_item]]
-    for row in resource['fillers']:
-        if type(row[answer_item])in(list, tuple):
-            wrong+=list(row)
-        else:
-            wrong+=[row[answer_item]]
+    try:
+        for row in resource['fillers']:
+            if type(row[answer_item])in(list, tuple):
+                wrong+=list(row)
+            else:
+                wrong+=[row[answer_item]]
+    except KeyError as e:
+        print(e, 'No fillers, no worries!')
     if posneg==1:
         right, wrong=wrong, right
     

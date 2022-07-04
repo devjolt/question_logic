@@ -3,6 +3,9 @@ import re
 
 from question_logic import utility_logic as utl
 
+"""Takes a correct and an incorrect list, and turns them into a question
+Requires at least 4 positive and 4 negative statements
+"""
 
 def logic(resource):
     raw_question = resource['question']

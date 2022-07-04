@@ -3,6 +3,8 @@ import re
 
 from question_logic import utility_logic as utl
 
+"""Handles questions which items containing code
+"""
 
 def logic(resource):
     '''

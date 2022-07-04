@@ -3,6 +3,12 @@ import re
 
 from question_logic import utility_logic as utl
 
+
+"""Takes a list of correct statements and reverses them by negating or un-negating verbs to
+make incorrect statements
+"""
+
+
 def logic(resource):
     """
 resource = {

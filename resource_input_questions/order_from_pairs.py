@@ -3,6 +3,8 @@ import re
 
 from question_logic import utility_logic as utl
 
+"""Handles questions with pairs where the items are stored ordinally
+"""
 
 def logic(resource):
 

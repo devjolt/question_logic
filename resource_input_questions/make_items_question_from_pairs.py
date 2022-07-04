@@ -3,6 +3,8 @@ import re
 
 from question_logic import utility_logic as utl
 
+"""requires pairs
+"""
 
 def logic(resource):
     raw_question_0 = resource['question_with_0']

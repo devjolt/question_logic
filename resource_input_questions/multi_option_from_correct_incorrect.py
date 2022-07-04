@@ -3,6 +3,8 @@ import re
 
 from question_logic import utility_logic as utl
 
+"""Creates a multi option question from a list of correct and incorrect statements
+"""
 
 def logic(resource):
     #choose whether right answers are correct or incorrect
