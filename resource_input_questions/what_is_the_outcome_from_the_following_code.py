@@ -3,6 +3,13 @@ import re
 
 from question_logic import utility_logic as utl
 
+"""
+example resource input:
+
+
+
+"""
+
 
 def logic(resource):
 

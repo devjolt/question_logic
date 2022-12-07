@@ -37,12 +37,13 @@ def logic(resource):
     if item_num == 0:    
         items, id, used = utl.add_possible_code_item(correct_item, 'correct', items, id, used)
     else:
-        id+= 1
+        
         if question_item[0] == '$':
             comment = True
             items.append({'code':'#' + correct_item, 'indicator':'correct', 'id':f'item{id}'})
         else:
             items.append({'item':correct_item, 'indicator':'correct', 'id':f'item{id}'})
+        id+= 1
         used.append(chosen_pair[item_num])
     
     print('populating')
