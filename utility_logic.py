@@ -53,10 +53,10 @@ def add_item(item, indicator, items, id, used):
     return items, id, used
     
 def add_possible_code_item(item, indicator, items, id, used, comment = False):
-    print('adding possible code item:', id, item)
+    #print('adding possible code item:', id, item)
     items = list(items)
     if item[0] == '$':
-        print('code item:')
+        print('code item:',item)
         items.append({'code':item[1:], 'indicator':indicator, 'id':f'item{id}'})
     else:
         if comment != True:
@@ -65,7 +65,7 @@ def add_possible_code_item(item, indicator, items, id, used, comment = False):
             items.append({'code':'#' + item, 'indicator':indicator, 'id':f'item{id}'})
     id+=1
     used.append(item)
-    print(item)
+    #print(item)
     return items, id, used
 
 def populate_items(incorrect, items, id, used, comment = False):
@@ -83,7 +83,7 @@ def correct_incorrect_helper(correct, incorrect):
     items = populate_items(incorrect, items, id, used)
     return items
 
-def add_code_line(self, line, code):
-    line= choose(line)
+def add_code_line(line, code):
+    line= choice(line)
     code+= line + '\n'
     return code
