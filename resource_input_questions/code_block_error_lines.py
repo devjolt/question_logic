@@ -60,37 +60,48 @@ def logic(resource):
     # incorrect answers will include code completes successfully plus two other unused index numbers
     # code will be valid code, with a corresponding incorrect line inserted in
     #NOTE: requires at least three lines of code...
-
     """
+    # use default question text if not provided in resource
+    text = 'Which line of code will cause the following snippet to fail:'
+    text = resource['question'] if 'question' in resource else text
+    
+    # question should always be supplied with valid code, so handle that first
+    code_valid = True
     valid = resource['valid']
-    invalid = resource['invalid']
-    
-    if len(valid[0]) != len(invalid):
-        print(f'Valid len ({len(valid[0])}) != invalid len ({len(invalid)})')
-        return None
-    
-    selected_valid = choice(valid) # select which valid to use
-
-    # compile all comments into one structure (list(set))
-    comments = []
-    for valid_code in valid:
-        comments+= [comment[1] for comment in valid_code]
-        
-    for line_group in invalid:
-        comments+= [comment[1] for comment in line_group]
-        
-    comments = list(set(comments))
-
-    code_valid = True if randint(0,2) == 0 else False #3/4 chance of having question with one incorrect line
-
+    chosen_valid = choice(valid) # select which valid to use
+            
+    """
     try:
-        lines_to_use = randint(3, len(selected_valid)-1) # select the number of lines to use for question
+        lines_to_use = randint(3, len(chosen_valid)) # select the number of lines to use for question
     except Exception as e:
         print('Not enough options...', e)
         lines_to_use = 3
+    
+    lines_to_use = None if lines_to_use==len(chosen_valid) else lines_to_use
+    """
+    lines_to_use = None # use all lines
+    selected_valid = chosen_valid[:lines_to_use] # rebuild valid and invalid based on number of lines to use
 
-    selected_valid = valid[:lines_to_use] # rebuild valid and invalid based on number of lines to use
-    selected_invalid = selected_valid[:lines_to_use]
+    comments = []
+    for valid_code in valid:
+        comments+= [comment[1] for comment in valid_code]
+
+    if 'invalid' in resource: # if supplied with resource, do the same for invalid code
+        invalid = resource['invalid']
+    
+        if len(valid[0]) != len(invalid): # check that invalid code has same number of lines as valid code
+            print(f'Valid len ({len(valid[0])}) != invalid len ({len(invalid)})')
+            # log error here:
+            return None
+
+        for line_group in invalid:
+            comments+= [comment[1] for comment in line_group]
+
+        selected_invalid = invalid[:lines_to_use]
+        code_valid = True if randint(0,1)==0 else False
+
+    # compile all comments into one structure (list(set))
+    comments = list(set(comments))
 
     items, id, used = [], 1, []
     code = ''''''
@@ -115,7 +126,7 @@ def logic(resource):
         id+=1#increment id
         
 
-        nums = [i for i in range(len(selected_valid[0]))]
+        nums = [i for i in range(len(selected_valid))]
         
         print(used, nums)
         while len(items) != 4:
@@ -127,12 +138,12 @@ def logic(resource):
                 id+=1
 
         #build a string with all but failing line correct
-        for i in range(len(selected_valid[0])):
+        for i in range(len(selected_valid)):
             if i == invalid_index:
                 print('correct_invalid_line:',correct_invalid_line)
                 code+= correct_invalid_line + '\n'
             else:
-                valid_line = selected_valid[0][i]#first item in valid[i] tuple
+                valid_line = selected_valid[i]#first item in valid[i] tuple
                 code+= choice(valid_line[0]) + '\n'
 
     else:#the code will actually not fail
@@ -140,7 +151,7 @@ def logic(resource):
         items.append({'item':'The code will execute successfully', 'indicator':'correct', 'id':f'item{id}'})
         id+=1
 
-        nums = [i for i in range(0, len(selected_valid[0]))]
+        nums = [i for i in range(0, len(selected_valid))]
         print('selected_valid:',selected_valid)
         shuffle(nums)    
         
@@ -149,10 +160,12 @@ def logic(resource):
             used.append(num+1)
             id+=1
 
-        for line in selected_valid[0]:
+        for line in selected_valid:
             print('line:',line)
             code+= choice(line[0]) + '\n'
+    
     question=[
-        {'text':'Which line of code will cause the following snippet to fail:'}, {'code':code}
+        {'text':text}, 
+        {'code':code}
     ]
     return question, items
