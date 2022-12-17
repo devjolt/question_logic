@@ -154,6 +154,19 @@ def logic(resource):
         for line in selected_valid:
             print(line)
             code+= choice(line[0]) + '\n'
+    """
+    if 'constants' in resource:
+        for name_space in resource['constants'].keys():
+            code = re.sub(name_space, resource['constants'][name_space], code)
+    """
+    if 'constant_collections' in resource:
+        # select a collection
+        collections = resource['constant_collections']
+        collection_selection = collections[choice(list(resource['constant_collections'].keys()))]
+        for name_space in collection_selection.keys():
+            code = re.sub(name_space, collection_selection[name_space], code)
+    
+
     question=[
         {'text':text}, 
         {'code':code}

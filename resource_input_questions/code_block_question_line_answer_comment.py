@@ -101,7 +101,7 @@ def logic(resource):
     focus_line_index = randint(0, len(selected_valid)-1) # select which line to use in question
     print('focus_line_index:',focus_line_index)
 
-    text = f'which comment best matches line {focus_line_index+1}:'
+    text = f'Which comment best matches line {focus_line_index+1}:'
     
     if 'question' in resource: # if custom question supplied, use it
         text = re.sub('PLACEHOLDER', str(focus_line_index+1), resource['question'])
@@ -124,8 +124,6 @@ def logic(resource):
 
         code_valid = True if randint(0,1)==0 else False
 
-    code_valid = False
-
     # compile all comments into one structure (list(set))
     comments = list(set(comments))
 
@@ -136,6 +134,7 @@ def logic(resource):
 
     accurate_comment_not_present = '# an accurate comment is not present'
     irrelevant_previous_failure = '# irrelevant because previous lines have already failed'
+    constant_answers_list = [accurate_comment_not_present]
 
     # start handling valid and invalid
     if code_valid is True:
@@ -164,6 +163,7 @@ def logic(resource):
             print('invalid: failed because of previous failure fail_line_index:',fail_line_index)
 
         if correct_options is False:
+            constant_answers_list.append(irrelevant_previous_failure)
             do_not_use = correct
             correct = accurate_comment_not_present
         
@@ -184,6 +184,18 @@ def logic(resource):
 
             code+= to_add
 
+    """
+    if 'constants' in resource:
+        for name_space in resource['constants'].keys():
+            code = re.sub(name_space, resource['constants'][name_space], code)
+    """
+    if 'constant_collections' in resource:
+        # select a collection
+        collections = resource['constant_collections']
+        collection_selection = collections[choice(list(resource['constant_collections'].keys()))]
+        for name_space in collection_selection.keys():
+            code = re.sub(name_space, collection_selection[name_space], code)
+    
     # fill items
     id, used = 1, []
     items = [{'code':correct, 'indicator':'correct', 'id':f'item{id}'}]
@@ -191,7 +203,7 @@ def logic(resource):
     id+=1
 
     # add any un-added items
-    for attempt in [irrelevant_previous_failure, accurate_comment_not_present]:
+    for attempt in constant_answers_list:
         
         if attempt not in used:
             items.append({'code':attempt, 'indicator':'incorrect', 'id':f'item{id}'})
