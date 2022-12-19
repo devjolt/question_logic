@@ -1,4 +1,5 @@
 from random import randint, choice
+import re
 
 def pick_one_many_times(item, depth = None):
     if depth is None:
@@ -87,3 +88,25 @@ def add_code_line(line, code):
     line= choice(line)
     code+= line + '\n'
     return code
+
+def add_constants_to_question_items(question, items, resource):
+    collections = resource['constant_collections']
+    # select a collection to use for this question
+    constants = collections[choice(list(collections.keys()))] 
+    for name_space in constants.keys(): # for each namespace in collection
+        for line in question:
+            if 'text' in line:
+                line['text'] = re.sub(name_space, constants[name_space], line['text'])
+            elif 'code' in line:
+                line['code'] = re.sub(name_space, constants[name_space], line['code'])
+            
+        for item in items: # swap into items whether code or text
+            try:
+                if 'item' in item:
+                    item['item'] = re.sub(name_space, constants[name_space], item['item'])
+                elif 'code' in item:
+                    item['code'] = re.sub(name_space, constants[name_space], item['code'])
+            except TypeError as e:
+                print('item is not a str')
+            
+    return question, items

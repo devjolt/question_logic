@@ -194,6 +194,7 @@ def logic(resource):
         collections = resource['constant_collections']
         collection_selection = collections[choice(list(resource['constant_collections'].keys()))]
         for name_space in collection_selection.keys():
+            text = re.sub(name_space, collection_selection[name_space], text)
             code = re.sub(name_space, collection_selection[name_space], code)
     
     # fill items
